@@ -26,7 +26,7 @@ public class Prerequisite {
      */
     public static final Prerequisite HAS_PAPER = new Prerequisite(
             () -> ClassUtils.exists("com.destroystokyo.paper.event.block.BeaconEffectEvent"),
-            "Requires server to be running paper"
+            "Requires server to be running paper (or a fork)"
     );
 
     /**
@@ -58,7 +58,7 @@ public class Prerequisite {
      * Requires the server to be running 1.20.3.
      */
     public static final Prerequisite HAS_1_20_3 = new Prerequisite(
-            () -> ProxyConstants.NMS_VERSION.contains("20_R3") || HAS_1_20_5.isMet(),
+            () -> ProxyConstants.NMS_VERSION.contains("20_R3"),
             "Requires server to be running 1.20.3+"
     );
 
@@ -66,7 +66,7 @@ public class Prerequisite {
      * Requires the server to be running 1.20.
      */
     public static final Prerequisite HAS_1_20 = new Prerequisite(
-            () -> ProxyConstants.NMS_VERSION.contains("20") || HAS_1_20_3.isMet(),
+            () -> ProxyConstants.NMS_VERSION.contains("20"),
             "Requires server to be running 1.20+"
     );
 
@@ -102,7 +102,7 @@ public class Prerequisite {
     @Deprecated(since = "6.49.0", forRemoval = true)
     public static final Prerequisite HAS_BUNGEECORD = new Prerequisite(
             () -> ClassUtils.exists("net.md_5.bungee.api.event.ServerConnectedEvent"),
-            "Requires server to be running BungeeCord"
+            "Requires server to be running BungeeCord (or a fork)"
     );
 
     /**
@@ -113,7 +113,7 @@ public class Prerequisite {
     @Deprecated(since = "6.49.0", forRemoval = true)
     public static final Prerequisite HAS_VELOCITY = new Prerequisite(
             () -> ClassUtils.exists("com.velocitypowered.api.event.player.ServerConnectedEvent"),
-            "Requires server to be running Velocity"
+            "Requires server to be running Velocity (or a fork)"
     );
 
     /**

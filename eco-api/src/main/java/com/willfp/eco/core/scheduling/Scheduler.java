@@ -20,7 +20,7 @@ public interface Scheduler {
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
     default UnifiedTask runLater(@NotNull Runnable runnable,
-                                long ticksLater) {
+                                 long ticksLater) {
         return runLaterGlobally((int) ticksLater, runnable);
     }
 
@@ -36,7 +36,7 @@ public interface Scheduler {
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
     default UnifiedTask runLater(long ticksLater,
-                                @NotNull Runnable runnable) {
+                                 @NotNull Runnable runnable) {
         return runLater(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), (int) ticksLater, runnable);
     }
 
@@ -51,8 +51,8 @@ public interface Scheduler {
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
     default UnifiedTask runTimer(@NotNull Runnable runnable,
-                                long delay,
-                                long repeat) {
+                                 long delay,
+                                 long repeat) {
         return runTimerGlobally((int) delay, (int) repeat, runnable);
     }
 
@@ -69,8 +69,8 @@ public interface Scheduler {
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
     default UnifiedTask runTimer(long delay,
-                                long repeat,
-                                @NotNull Runnable runnable) {
+                                 long repeat,
+                                 @NotNull Runnable runnable) {
         return runTimerGlobally((int) delay, (int) repeat, runnable);
     }
 
@@ -85,8 +85,8 @@ public interface Scheduler {
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
     default UnifiedTask runAsyncTimer(@NotNull Runnable runnable,
-                                     long delay,
-                                     long repeat) {
+                                      long delay,
+                                      long repeat) {
         return runTimerAsync((int) delay, (int) repeat, runnable);
     }
 
@@ -103,8 +103,8 @@ public interface Scheduler {
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
     default UnifiedTask runAsyncTimer(long delay,
-                                     long repeat,
-                                     @NotNull Runnable runnable) {
+                                      long repeat,
+                                      @NotNull Runnable runnable) {
         return runTimerAsync((int) delay, (int) repeat, runnable);
     }
 
@@ -175,7 +175,7 @@ public interface Scheduler {
      * @return The created {@link UnifiedTask}.
      */
     UnifiedTask run(@NotNull Location location,
-                   @NotNull Runnable task);
+                    @NotNull Runnable task);
 
     /**
      * Run a global task.
@@ -204,8 +204,8 @@ public interface Scheduler {
      * @return The created {@link UnifiedTask}.
      */
     UnifiedTask runLater(@NotNull Location location,
-                        int ticksLater,
-                        @NotNull Runnable task);
+                         int ticksLater,
+                         @NotNull Runnable task);
 
     /**
      * Run a task after a delay.
@@ -239,9 +239,9 @@ public interface Scheduler {
      * @return The created {@link UnifiedTask}.
      */
     UnifiedTask runTimer(@NotNull Location location,
-                        int delay,
-                        int repeat,
-                        @NotNull Runnable task);
+                         int delay,
+                         int repeat,
+                         @NotNull Runnable task);
 
     /**
      * Run a task on a timer.
@@ -278,6 +278,6 @@ public interface Scheduler {
      * @return The created {@link UnifiedTask}.
      */
     UnifiedTask runTimerAsync(int delay,
-                             int repeat,
-                             @NotNull Runnable task);
+                              int repeat,
+                              @NotNull Runnable task);
 }

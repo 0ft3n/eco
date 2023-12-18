@@ -4,16 +4,16 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21")
     }
 }
 
 plugins {
     id("java-library")
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     id("maven-publish")
     id("java")
-    kotlin("jvm") version "1.7.10"
+    kotlin("jvm") version "1.9.21"
 }
 
 dependencies {
@@ -27,6 +27,9 @@ dependencies {
     implementation(project(path = ":eco-core:core-nms:v1_19_R1", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_19_R2", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_19_R3", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_20_R1", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_20_R2", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_20_R3", configuration = "reobf"))
 }
 
 allprojects {
@@ -39,6 +42,7 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
+        maven("https://repo.auxilor.io/repository/maven-public/")
         maven("https://jitpack.io")
 
         // CustomCrafting
@@ -80,9 +84,6 @@ allprojects {
         // LibsDisguises
         maven("https://repo.md-5.net/content/groups/public/")
 
-        // UltraEconomy
-        maven("https://repo.techscode.com/repository/maven-releases/")
-
         // PlayerPoints
         maven("https://repo.rosewooddev.io/repository/public/")
 
@@ -92,16 +93,16 @@ allprojects {
 
     dependencies {
         // Kotlin
-        implementation(kotlin("stdlib", version = "1.7.10"))
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
+        implementation(kotlin("stdlib", version = "1.9.21"))
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
         // Included in spigot jar, no need to move to implementation
         compileOnly("org.jetbrains:annotations:23.0.0")
         compileOnly("com.google.guava:guava:31.1-jre")
 
         // Test
-        testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
-        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+        testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 
         // Adventure
         implementation("net.kyori:adventure-api:4.10.1")
@@ -111,8 +112,8 @@ allprojects {
         implementation("net.kyori:adventure-text-serializer-legacy:4.10.1")
 
         // Other
-        implementation("com.github.ben-manes.caffeine:caffeine:3.1.0")
-        implementation("org.apache.maven:maven-artifact:3.8.5")
+        implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
+        implementation("org.apache.maven:maven-artifact:3.9.0")
     }
 
     tasks.withType<JavaCompile> {
@@ -170,6 +171,7 @@ allprojects {
             relocate("org.reactivestreams", "com.willfp.eco.libs.reactivestreams")
             relocate("reactor.", "com.willfp.eco.libs.reactor.") // Dot in name to be safe
             relocate("com.moandjiezana.toml", "com.willfp.eco.libs.toml")
+            relocate("com.willfp.modelenginebridge", "com.willfp.eco.libs.modelenginebridge")
 
             /*
             Kotlin and caffeine are not shaded so that they can be accessed directly by eco plugins.

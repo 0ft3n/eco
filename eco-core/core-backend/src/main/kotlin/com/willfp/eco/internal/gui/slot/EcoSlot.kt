@@ -34,4 +34,6 @@ open class EcoSlot(
     }
 
     override fun getActionableSlot(player: Player, menu: Menu): EcoSlot = this
+
+    override fun shouldRenderOnClick(clickType: ClickType) = !handlers[clickType].isNullOrEmpty()
 }

@@ -14,8 +14,6 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
-private val goToZero = Crunch.compileExpression("0")
-
 private val min = Function("min", 2) {
     min(it[0], it[1])
 }
@@ -25,10 +23,13 @@ private val max = Function("max", 2) {
 }
 
 interface ExpressionHandler {
-    fun evaluate(expression: String, context: PlaceholderContext): Double
+    fun evaluate(expression: String, context: PlaceholderContext): Double?
 }
-private fun String.fastToDoubleOrNull(): Double? {
-    if (isEmpty()) {
+
+fun String.fastToDoubleOrNull(): Double? {
+    val len = length
+
+    if (len == 0) {
         return null
     }
 
@@ -40,13 +41,13 @@ private fun String.fastToDoubleOrNull(): Double? {
     var decimalPart = 0.0
     var decimalIdx = -1
 
-    while (idx < length) {
-
+    while (idx < len) {
         when (val char = this[idx]) {
             '.' -> {
                 if (decimalIdx != -1) return null
                 decimalIdx = idx
             }
+
             in '0'..'9' -> {
                 val number = (char.code - '0'.code).toDouble()
                 if (decimalIdx != -1) {
@@ -55,13 +56,14 @@ private fun String.fastToDoubleOrNull(): Double? {
                     integerPart = integerPart * 10 + number
                 }
             }
+
             else -> return null
         }
 
         idx++
     }
 
-    decimalPart /= 10.0.pow((length - decimalIdx - 1).toDouble())
+    decimalPart /= 10.0.pow((len - decimalIdx - 1).toDouble())
 
     return if (isNegative) -(integerPart + decimalPart) else integerPart + decimalPart
 }
@@ -70,7 +72,7 @@ private fun String.fastToDoubleOrNull(): Double? {
 class ImmediatePlaceholderTranslationExpressionHandler(
     private val placeholderParser: PlaceholderParser
 ) : ExpressionHandler {
-    private val cache: Cache<String, CompiledExpression> = Caffeine.newBuilder()
+    private val cache: Cache<String, CompiledExpression?> = Caffeine.newBuilder()
         .expireAfterAccess(500, TimeUnit.MILLISECONDS)
         .build()
 
@@ -78,38 +80,36 @@ class ImmediatePlaceholderTranslationExpressionHandler(
         addFunctions(min, max)
     }
 
-    override fun evaluate(expression: String, context: PlaceholderContext): Double {
+    override fun evaluate(expression: String, context: PlaceholderContext): Double? {
         val translatedExpression = placeholderParser.translatePlacholders(expression, context)
 
         val compiled = cache.get(translatedExpression) {
-            runCatching { Crunch.compileExpression(translatedExpression, env) }
-                .getOrDefault(goToZero)
+            runCatching { Crunch.compileExpression(translatedExpression, env) }.getOrNull()
         }
 
-        return runCatching { compiled.evaluate() }.getOrDefault(0.0)
+        return runCatching { compiled?.evaluate() }.getOrNull()
     }
 }
 
 class LazyPlaceholderTranslationExpressionHandler(
     private val placeholderParser: PlaceholderParser
 ) : ExpressionHandler {
-    private val cache: Cache<String, CompiledExpression> = Caffeine.newBuilder()
-        .build()
+    private val cache = mutableMapOf<String, CompiledExpression?>()
 
-    override fun evaluate(expression: String, context: PlaceholderContext): Double {
+    override fun evaluate(expression: String, context: PlaceholderContext): Double? {
         val placeholders = PlaceholderManager.findPlaceholdersIn(expression)
 
         val placeholderValues = placeholderParser.parseIndividualPlaceholders(placeholders, context)
             .map { it.fastToDoubleOrNull() ?: 0.0 }
             .toDoubleArray()
 
-        val compiled = cache.get(expression) {
+        val compiled = cache.getOrPut(expression) {
             val env = EvaluationEnvironment()
             env.setVariableNames(*placeholders.toTypedArray())
             env.addFunctions(min, max)
-            runCatching { Crunch.compileExpression(expression, env) }.getOrDefault(goToZero)
+            runCatching { Crunch.compileExpression(expression, env) }.getOrNull()
         }
 
-        return runCatching { compiled.evaluate(*placeholderValues) }.getOrDefault(0.0)
+        return runCatching { compiled?.evaluate(*placeholderValues) }.getOrNull()
     }
 }

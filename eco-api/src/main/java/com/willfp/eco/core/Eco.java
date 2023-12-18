@@ -30,11 +30,13 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -136,6 +138,14 @@ public interface Eco {
     Logger createLogger(@NotNull EcoPlugin plugin);
 
     /**
+     * Get NOOP logger.
+     *
+     * @return The logger.
+     */
+    @NotNull
+    Logger getNOOPLogger();
+
+    /**
      * Create a PAPI integration.
      *
      * @param plugin The plugin.
@@ -170,7 +180,7 @@ public interface Eco {
      * @return The PluginCommandBase implementation
      */
     @NotNull
-    PluginCommandBase createPluginCommand(@NotNull CommandBase parentDelegate,
+    PluginCommandBase createPluginCommand(@NotNull PluginCommandBase parentDelegate,
                                           @NotNull EcoPlugin plugin,
                                           @NotNull String name,
                                           @NotNull String permission,
@@ -394,15 +404,6 @@ public interface Eco {
     ServerProfile getServerProfile();
 
     /**
-     * Unload a player profile from memory.
-     * <p>
-     * This will not save the profile first.
-     *
-     * @param uuid The uuid.
-     */
-    void unloadPlayerProfile(@NotNull UUID uuid);
-
-    /**
      * Create dummy entity - never spawned, exists purely in code.
      *
      * @param location The location.
@@ -528,9 +529,10 @@ public interface Eco {
      *
      * @param expression The expression.
      * @param context    The context.
-     * @return The value of the expression, or zero if invalid.
+     * @return The value of the expression, or null if invalid.
      */
-    double evaluate(@NotNull String expression,
+    @Nullable
+    Double evaluate(@NotNull String expression,
                     @NotNull PlaceholderContext context);
 
     /**
@@ -586,6 +588,19 @@ public interface Eco {
     String getPlaceholderValue(@Nullable EcoPlugin plugin,
                                @NotNull String args,
                                @NotNull PlaceholderContext context);
+
+    /**
+     * Set a client-side entity display name.
+     *
+     * @param entity  The entity.
+     * @param player  The player.
+     * @param name    The display name.
+     * @param visible If the display name should be forcibly visible.
+     */
+    void setClientsideDisplayName(@NotNull LivingEntity entity,
+                                  @NotNull Player player,
+                                  @NotNull Component name,
+                                  boolean visible);
 
     /**
      * Get the instance of eco; the bridge between the api frontend and the implementation backend.

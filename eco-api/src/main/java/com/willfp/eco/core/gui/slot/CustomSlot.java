@@ -2,6 +2,7 @@ package com.willfp.eco.core.gui.slot;
 
 import com.willfp.eco.core.gui.menu.Menu;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -74,6 +75,15 @@ public abstract class CustomSlot implements Slot {
     public final @NotNull Slot getActionableSlot(@NotNull final Player player,
                                                  @NotNull final Menu menu) {
         return delegate;
+    }
+
+    @Override
+    public boolean shouldRenderOnClick(@NotNull final ClickType clickType) {
+        if (delegate == null) {
+            throw new IllegalStateException("Custom Slot was not initialized!");
+        }
+
+        return delegate.shouldRenderOnClick(clickType);
     }
 
     @Override

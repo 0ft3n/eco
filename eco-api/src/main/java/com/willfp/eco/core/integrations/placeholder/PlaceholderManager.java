@@ -98,6 +98,7 @@ public final class PlaceholderManager {
         // Storing as immutable set leads to slower times to register placeholders, but much
         // faster times to access registrations.
         Set<Placeholder> pluginPlaceholders = new HashSet<>(REGISTERED_PLACEHOLDERS.get(placeholder.getPlugin()));
+        pluginPlaceholders.removeIf(p -> p.getPattern().equals(placeholder.getPattern()));
         pluginPlaceholders.add(placeholder);
         REGISTERED_PLACEHOLDERS.put(placeholder.getPlugin(), ImmutableSet.copyOf(pluginPlaceholders));
     }
@@ -149,6 +150,7 @@ public final class PlaceholderManager {
      */
     @Deprecated(since = "6.56.0", forRemoval = true)
     @NotNull
+    @SuppressWarnings("DeprecatedIsStillUsed")
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player) {
         return translatePlaceholders(text, player, EMPTY_INJECTABLE);
@@ -165,10 +167,19 @@ public final class PlaceholderManager {
      */
     @Deprecated(since = "6.56.0", forRemoval = true)
     @NotNull
+    @SuppressWarnings("DeprecatedIsStillUsed")
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player,
                                                @NotNull final PlaceholderInjectable context) {
-        return translatePlaceholders(text, player, context, new ArrayList<>());
+        return translatePlaceholders(
+                text,
+                new PlaceholderContext(
+                        player,
+                        null,
+                        context,
+                        new ArrayList<>()
+                )
+        );
     }
 
     /**
@@ -183,6 +194,7 @@ public final class PlaceholderManager {
      */
     @Deprecated(since = "6.56.0", forRemoval = true)
     @NotNull
+    @SuppressWarnings("DeprecatedIsStillUsed")
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player,
                                                @NotNull final PlaceholderInjectable context,

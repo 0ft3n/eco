@@ -27,6 +27,8 @@ class YamlDataHandler(
             PersistentDataKeyType.BOOLEAN -> dataYml.getBoolOrNull("player.$uuid.${key.key}") as T?
             PersistentDataKeyType.STRING_LIST -> dataYml.getStringsOrNull("player.$uuid.${key.key}") as T?
             PersistentDataKeyType.CONFIG -> dataYml.getSubsectionOrNull("player.$uuid.${key.key}") as T?
+            PersistentDataKeyType.BIG_DECIMAL -> dataYml.getBigDecimalOrNull("player.$uuid.${key.key}") as T?
+
             else -> null
         }
 
@@ -37,15 +39,25 @@ class YamlDataHandler(
         doWrite(uuid, key.key, value)
     }
 
-    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        val profile = handler.loadGenericProfile(uuid)
-
-        for (key in keys) {
-            doWrite(uuid, key.key, profile.read(key))
+    override fun saveKeysFor(uuid: UUID, keys: Map<PersistentDataKey<*>, Any>) {
+        for ((key, value) in keys) {
+            doWrite(uuid, key.key, value)
         }
     }
 
     private fun doWrite(uuid: UUID, key: NamespacedKey, value: Any) {
         dataYml.set("player.$uuid.$key", value)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+
+        return other is YamlDataHandler
+    }
+
+    override fun hashCode(): Int {
+        return type.hashCode()
     }
 }

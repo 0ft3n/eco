@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.ClickType
+import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
@@ -44,19 +45,15 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         if (delegate is EcoSlot) {
             delegate.handleInventoryClick(event, menu)
+
+            if (delegate.shouldRenderOnClick(event.click)) {
+                player.renderActiveMenu()
+            }
         } else if (delegate === this) {
             return
         } else {
             delegate.handle(player, event, menu, depth + 1)
         }
-    }
-
-    @EventHandler(
-        priority = EventPriority.HIGHEST
-    )
-    fun handleRender(event: InventoryClickEvent) {
-        val player = event.whoClicked as? Player ?: return
-        player.renderActiveMenu()
     }
 
     @EventHandler(
@@ -94,6 +91,8 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
             if (slot.isCaptive(player, menu)) {
                 if (!slot.isAllowedCaptive(player, menu, event.oldCursor)) {
                     event.isCancelled = true
+                } else {
+                    player.renderActiveMenu()
                 }
             } else {
                 event.isCancelled = true
@@ -126,6 +125,8 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         if (slot.isCaptive(player, menu)) {
             if (!slot.isAllowedCaptive(player, menu, event.currentItem)) {
                 event.isCancelled = true
+            } else {
+                player.renderActiveMenu()
             }
         } else {
             event.isCancelled = true
@@ -136,21 +137,11 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
     fun handleClose(event: InventoryCloseEvent) {
         val menu = event.inventory.getMenu() as? EcoMenu ?: return
 
+        menu.refresh(event.player as Player)
+
         menu.handleClose(event)
 
         plugin.scheduler.run { MenuHandler.unregisterInventory(event.inventory) }
-    }
-
-    @EventHandler
-    fun forceRender(event: InventoryClickEvent) {
-        val player = event.whoClicked as? Player ?: return
-        player.renderActiveMenu()
-    }
-
-    @EventHandler
-    fun forceRender(event: InventoryDragEvent) {
-        val player = event.whoClicked as? Player ?: return
-        player.renderActiveMenu()
     }
 
     @EventHandler(
@@ -224,6 +215,17 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         }
 
         if (event.clickedInventory is PlayerInventory) {
+            event.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun temporaryExploitPatch(event: InventoryClickEvent) {
+        if (event.player.renderedInventory == null) {
+            return
+        }
+
+        if (event.action == InventoryAction.COLLECT_TO_CURSOR) {
             event.isCancelled = true
         }
     }

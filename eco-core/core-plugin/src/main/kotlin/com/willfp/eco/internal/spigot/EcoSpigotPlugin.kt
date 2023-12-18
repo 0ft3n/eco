@@ -45,8 +45,10 @@ import com.willfp.eco.internal.items.ArgParserColor
 import com.willfp.eco.internal.items.ArgParserCustomModelData
 import com.willfp.eco.internal.items.ArgParserEnchantment
 import com.willfp.eco.internal.items.ArgParserFlag
+import com.willfp.eco.internal.items.ArgParserHead
 import com.willfp.eco.internal.items.ArgParserName
 import com.willfp.eco.internal.items.ArgParserTexture
+import com.willfp.eco.internal.items.ArgParserTrim
 import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
@@ -61,11 +63,7 @@ import com.willfp.eco.internal.spigot.data.PlayerBlockListener
 import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.storage.ProfileSaver
 import com.willfp.eco.internal.spigot.drops.CollatedRunnable
-import com.willfp.eco.internal.spigot.eventlisteners.EntityDeathByEntityListeners
-import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersPaper
-import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersSpigot
-import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersPaper
-import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersSpigot
+import com.willfp.eco.internal.spigot.eventlisteners.*
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorChangeEventListeners
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorListener
 import com.willfp.eco.internal.spigot.gui.GUIListener
@@ -112,11 +110,13 @@ import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
 import com.willfp.eco.internal.spigot.integrations.placeholder.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryPlayerPoints
+import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryRoyaleEconomy
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryUltraEconomy
 import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
 import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
 import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.internal.spigot.integrations.shop.ShopZShop
+import com.willfp.eco.internal.spigot.metrics.PlayerflowHandler
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.recipes.CraftingRecipeListener
@@ -127,6 +127,7 @@ import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapedCraftingRecipe
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapelessCraftingRecipeStackHandler
 import com.willfp.eco.util.ClassUtils
 import me.TechsCode.UltraEconomy.UltraEconomy
+import me.qKing12.RoyaleEconomy.MultiCurrency.MultiCurrencyHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
@@ -147,6 +148,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserFlag)
         Items.registerArgParser(ArgParserUnbreakable)
         Items.registerArgParser(ArgParserName)
+        Items.registerArgParser(ArgParserHead)
+        if (Prerequisite.HAS_1_20.isMet) {
+            Items.registerArgParser(ArgParserTrim)
+        }
 
         Entities.registerArgParser(EntityArgParserName)
         Entities.registerArgParser(EntityArgParserNoAI)
@@ -219,8 +224,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             this.logger.info("No conflicts found!")
         }
 
-
-        CollatedRunnable(this)
         CustomItemsManager.registerProviders() // Do it again here
 
         // Register events for ShopSellEvent
@@ -251,19 +254,23 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Eco.get().adventure?.close()
     }
 
-    override fun handleReload() {
+    override fun createTasks() {
         CollatedRunnable(this)
 
         this.scheduler.runLater(3) {
             profileHandler.migrateIfNeeded()
         }
 
-        ProfileSaver(this, profileHandler)
+        ProfileSaver(this, profileHandler).startTicking()
+
         this.scheduler.runTimer(
-            { getProxy(PacketHandlerProxy::class.java).clearDisplayFrames() },
             this.configYml.getInt("display-frame-ttl").toLong(),
-            this.configYml.getInt("display-frame-ttl").toLong()
-        )
+            this.configYml.getInt("display-frame-ttl").toLong(),
+        ) { getProxy(PacketHandlerProxy::class.java).clearDisplayFrames() }
+
+        if (this.configYml.getBool("playerflow")) {
+            PlayerflowHandler(this.scheduler).startTicking()
+        }
     }
 
     override fun handleAfterLoad() {
@@ -359,6 +366,13 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                 }
             },
             IntegrationLoader("PlayerPoints") { Prices.registerPriceFactory(PriceFactoryPlayerPoints()) },
+            IntegrationLoader("RoyaleEconomy") {
+                if (!MultiCurrencyHandler.getCurrencies().isNullOrEmpty()) {
+                    for (currency in MultiCurrencyHandler.getCurrencies()) {
+                        Prices.registerPriceFactory(PriceFactoryRoyaleEconomy(currency))
+                    }
+                }
+            },
 
             // Placeholder
             IntegrationLoader("PlaceholderAPI") { PlaceholderManager.addIntegration(PlaceholderIntegrationPAPI()) },
@@ -378,12 +392,12 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         val listeners = mutableListOf(
             ArmorListener(),
             EntityDeathByEntityListeners(this),
-            CraftingRecipeListener(),
+            CraftingRecipeListener(this),
             StackedRecipeListener(this),
             GUIListener(this),
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
-            DataListener(this),
+            DataListener(this, profileHandler),
             PlayerBlockListener(this),
             ServerLocking
         )

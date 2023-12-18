@@ -38,6 +38,7 @@ import com.willfp.eco.internal.gui.menu.renderedInventory
 import com.willfp.eco.internal.gui.slot.EcoSlotBuilder
 import com.willfp.eco.internal.integrations.PAPIExpansion
 import com.willfp.eco.internal.logging.EcoLogger
+import com.willfp.eco.internal.logging.NOOPLogger
 import com.willfp.eco.internal.placeholder.PlaceholderParser
 import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoSchedulerFolia
@@ -52,6 +53,7 @@ import com.willfp.eco.internal.spigot.math.ImmediatePlaceholderTranslationExpres
 import com.willfp.eco.internal.spigot.math.LazyPlaceholderTranslationExpressionHandler
 import com.willfp.eco.internal.spigot.proxy.BukkitCommandsProxy
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
+import com.willfp.eco.internal.spigot.proxy.DisplayNameProxy
 import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.ExtendedPersistentDataContainerFactoryProxy
@@ -61,10 +63,12 @@ import com.willfp.eco.internal.spigot.proxy.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.proxy.SNBTConverterProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
+import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Entity
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -127,6 +131,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun createLogger(plugin: EcoPlugin) =
         EcoLogger(plugin)
 
+    override fun getNOOPLogger() =
+        NOOPLogger
+
     override fun createPAPIIntegration(plugin: EcoPlugin) {
         PAPIExpansion(plugin)
     }
@@ -186,7 +193,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     }
 
     override fun createPluginCommand(
-        parentDelegate: CommandBase,
+        parentDelegate: PluginCommandBase,
         plugin: EcoPlugin,
         name: String,
         permission: String,
@@ -260,6 +267,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun addNewPlugin(plugin: EcoPlugin) {
         loadedEcoPlugins[plugin.name.lowercase()] = plugin
+        loadedEcoPlugins[plugin.id] = plugin
     }
 
     override fun getLoadedPlugins(): List<String> =
@@ -282,9 +290,6 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun loadPlayerProfile(uuid: UUID) =
         profileHandler.load(uuid)
-
-    override fun unloadPlayerProfile(uuid: UUID) =
-        profileHandler.unloadPlayer(uuid)
 
     override fun createDummyEntity(location: Location): Entity =
         getProxy(DummyEntityFactoryProxy::class.java).createDummyEntity(location)
@@ -346,4 +351,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun getPlaceholderValue(plugin: EcoPlugin?, args: String, context: PlaceholderContext) =
         placeholderParser.getPlaceholderResult(plugin, args, context)
+
+    override fun setClientsideDisplayName(entity: LivingEntity, player: Player, name: Component, visible: Boolean) =
+        this.getProxy(DisplayNameProxy::class.java).setClientsideDisplayName(entity, player, name, visible)
 }

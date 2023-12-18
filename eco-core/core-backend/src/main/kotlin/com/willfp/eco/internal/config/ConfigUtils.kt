@@ -30,6 +30,8 @@ internal fun Any?.constrainConfigTypes(type: ConfigType): Any? = when (this) {
             this.toMutableList()
         }
     }
+
+    is Float -> this.toDouble() // Should prevent !!float from being written
     else -> this
 }
 
@@ -110,6 +112,7 @@ private object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
         representer.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
 
         return Yaml(
+            @Suppress("DEPRECATION")
             YamlConstructor(),
             representer,
             yamlOptions,

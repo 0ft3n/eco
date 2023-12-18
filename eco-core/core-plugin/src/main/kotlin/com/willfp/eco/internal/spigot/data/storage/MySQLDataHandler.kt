@@ -84,6 +84,8 @@ class MySQLDataHandler(
             PersistentDataKeyType.BOOLEAN -> data.getBoolOrNull(key.key.toString())
             PersistentDataKeyType.STRING_LIST -> data.getStringsOrNull(key.key.toString())
             PersistentDataKeyType.CONFIG -> data.getSubsectionOrNull(key.key.toString())
+            PersistentDataKeyType.BIG_DECIMAL -> data.getBigDecimalOrNull(key.key.toString())
+
             else -> null
         }
 
@@ -97,16 +99,15 @@ class MySQLDataHandler(
         setData(uuid, data)
     }
 
-    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        val profile = handler.loadGenericProfile(uuid)
-
+    override fun saveKeysFor(uuid: UUID, keys: Map<PersistentDataKey<*>, Any>) {
         executor.submit {
             val data = getData(uuid)
-            for (key in keys) {
-                data.set(key.key.toString(), profile.read(key))
+
+            for ((key, value) in keys) {
+                data.set(key.key.toString(), value)
             }
 
-            setData(uuid, data)
+            doSetData(uuid, data)
         }
     }
 
@@ -136,10 +137,14 @@ class MySQLDataHandler(
 
     private fun setData(uuid: UUID, config: Config) {
         executor.submit {
-            transaction(database) {
-                table.update({ table.id eq uuid }) {
-                    it[dataColumn] = config.toPlaintext()
-                }
+            doSetData(uuid, config)
+        }
+    }
+
+    private fun doSetData(uuid: UUID, config: Config) {
+        transaction(database) {
+            table.update({ table.id eq uuid }) {
+                it[dataColumn] = config.toPlaintext()
             }
         }
     }
@@ -148,5 +153,17 @@ class MySQLDataHandler(
         transaction(database) {
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+
+        return other is MySQLDataHandler
+    }
+
+    override fun hashCode(): Int {
+        return type.hashCode()
     }
 }

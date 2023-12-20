@@ -5,6 +5,7 @@ import com.willfp.eco.core.config.json
 import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.scheduling.Scheduler
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -18,7 +19,7 @@ class PlayerflowHandler(
     private val scheduler: Scheduler
 ) {
     internal fun startTicking() {
-        scheduler.runAsyncTimer(1200L, 1200L) {
+        scheduler.runTimerAsync(1200, 1200) {
             makeRequest()
         }
     }

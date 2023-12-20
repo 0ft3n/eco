@@ -2,6 +2,8 @@ package com.willfp.eco.internal.spigot.data
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.util.PlayerUtils
+import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -22,7 +24,7 @@ class DataListener(
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
-        plugin.scheduler.runLater(5) {
+        plugin.scheduler.runLaterGlobally(5) {
             PlayerUtils.updateSavedDisplayName(event.player)
         }
     }

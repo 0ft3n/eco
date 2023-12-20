@@ -24,6 +24,7 @@ import com.willfp.eco.core.version.Version;
 import com.willfp.eco.core.web.UpdateChecker;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
@@ -431,7 +432,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.loadPluginCommands().forEach(PluginCommand::register);
 
         // Run preliminary reload to resolve load order issues
-        this.getScheduler().runLater(() -> {
+        this.getScheduler().runLaterGlobally(1, () -> {
             Logger before = this.getLogger();
             // Temporary silence logger.
             this.logger = Eco.get().getNOOPLogger();
@@ -439,9 +440,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             this.reload(false);
 
             this.logger = before;
-        }, 1);
+        });
 
-        this.getScheduler().runLater(this::afterLoad, 2);
+        this.getScheduler().runLaterGlobally(2, this::afterLoad);
 
         if (this.isSupportingExtensions()) {
             this.getExtensionLoader().loadExtensions();

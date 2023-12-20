@@ -144,6 +144,7 @@ import me.qKing12.RoyaleEconomy.MultiCurrency.MultiCurrencyHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
@@ -282,7 +283,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     override fun createTasks() {
         CollatedRunnable(this)
 
-        this.scheduler.runLater(3) {
+        this.scheduler.runLaterGlobally(3) {
             profileHandler.migrateIfNeeded()
         }
 
@@ -290,9 +291,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
         ProfileSaver(this, profileHandler).startTicking()
 
-        this.scheduler.runTimer(
-            this.configYml.getInt("display-frame-ttl").toLong(),
-            this.configYml.getInt("display-frame-ttl").toLong(),
+        this.scheduler.runTimerGlobally(
+            this.configYml.getInt("display-frame-ttl"),
+            this.configYml.getInt("display-frame-ttl"),
         ) { getProxy(PacketHandlerProxy::class.java).clearDisplayFrames() }
 
         if (this.configYml.getBool("playerflow")) {

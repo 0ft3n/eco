@@ -22,6 +22,7 @@ dependencies {
     implementation(project(path = ":eco-core:core-plugin", configuration = "shadow"))
     implementation(project(":eco-core:core-proxy"))
     implementation(project(":eco-core:core-backend"))
+    implementation(project(":eco-core:core-folia"))
     implementation(project(":eco-core:core-backend-modern"))
     implementation(project(path = ":eco-core:core-nms:v1_17_R1", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_18_R1", configuration = "reobf"))
@@ -45,6 +46,7 @@ allprojects {
 
     repositories {
         mavenCentral()
+        mavenLocal()
         maven("https://repo.auxilor.io/repository/maven-public/")
         maven("https://jitpack.io") {
             content { includeGroupByRegex("com\\.github\\..*") }
@@ -97,6 +99,7 @@ allprojects {
 
         // HuskPlugins
         maven("https://repo.william278.net/releases")
+
 
         // FancyHolograms
         maven("https://repo.fancyplugins.de/releases")

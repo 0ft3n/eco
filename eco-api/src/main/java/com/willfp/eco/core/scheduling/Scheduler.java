@@ -3,7 +3,7 @@ package com.willfp.eco.core.scheduling;
 import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -15,13 +15,13 @@ public interface Scheduler {
      *
      * @param runnable   The lambda to run.
      * @param ticksLater The amount of ticks to wait before execution.
-     * @return The created {@link BukkitTask}.
+     * @return The created {@link UnifiedTask}.
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask runLater(@NotNull Runnable runnable,
+    default UnifiedTask runLater(@NotNull Runnable runnable,
                                 long ticksLater) {
-        return runLater(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), (int) ticksLater, runnable);
+        return runLaterGlobally((int) ticksLater, runnable);
     }
 
     /**
@@ -31,11 +31,11 @@ public interface Scheduler {
      *
      * @param runnable   The lambda to run.
      * @param ticksLater The amount of ticks to wait before execution.
-     * @return The created {@link BukkitTask}.
+     * @return The created {@link UnifiedTask}.
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask runLater(long ticksLater,
+    default UnifiedTask runLater(long ticksLater,
                                 @NotNull Runnable runnable) {
         return runLater(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), (int) ticksLater, runnable);
     }
@@ -46,14 +46,14 @@ public interface Scheduler {
      * @param runnable The lambda to run.
      * @param delay    The amount of ticks to wait before the first execution.
      * @param repeat   The amount of ticks to wait between executions.
-     * @return The created {@link BukkitTask}.
+     * @return The created {@link UnifiedTask}.
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask runTimer(@NotNull Runnable runnable,
+    default UnifiedTask runTimer(@NotNull Runnable runnable,
                                 long delay,
                                 long repeat) {
-        return runTimer(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), (int) delay, (int) repeat, runnable);
+        return runTimerGlobally((int) delay, (int) repeat, runnable);
     }
 
     /**
@@ -64,14 +64,14 @@ public interface Scheduler {
      * @param runnable The lambda to run.
      * @param delay    The amount of ticks to wait before the first execution.
      * @param repeat   The amount of ticks to wait between executions.
-     * @return The created {@link BukkitTask}.
+     * @return The created {@link UnifiedTask}.
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask runTimer(long delay,
+    default UnifiedTask runTimer(long delay,
                                 long repeat,
                                 @NotNull Runnable runnable) {
-        return runTimer(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), (int) delay, (int) repeat, runnable);
+        return runTimerGlobally((int) delay, (int) repeat, runnable);
     }
 
     /**
@@ -80,11 +80,11 @@ public interface Scheduler {
      * @param runnable The lambda to run.
      * @param delay    The amount of ticks to wait before the first execution.
      * @param repeat   The amount of ticks to wait between executions.
-     * @return The created {@link BukkitTask}.
+     * @return The created {@link UnifiedTask}.
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask runAsyncTimer(@NotNull Runnable runnable,
+    default UnifiedTask runAsyncTimer(@NotNull Runnable runnable,
                                      long delay,
                                      long repeat) {
         return runTimerAsync((int) delay, (int) repeat, runnable);
@@ -98,11 +98,11 @@ public interface Scheduler {
      * @param runnable The lambda to run.
      * @param delay    The amount of ticks to wait before the first execution.
      * @param repeat   The amount of ticks to wait between executions.
-     * @return The created {@link BukkitTask}.
+     * @return The created {@link UnifiedTask}.
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask runAsyncTimer(long delay,
+    default UnifiedTask runAsyncTimer(long delay,
                                      long repeat,
                                      @NotNull Runnable runnable) {
         return runTimerAsync((int) delay, (int) repeat, runnable);
@@ -112,12 +112,12 @@ public interface Scheduler {
      * Run the task.
      *
      * @param runnable The lambda to run.
-     * @return The created {@link BukkitTask}.
+     * @return The created {@link UnifiedTask}.
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask run(@NotNull Runnable runnable) {
-        return run(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), runnable);
+    default UnifiedTask run(@NotNull Runnable runnable) {
+        return runGlobally(runnable);
     }
 
     /**
@@ -163,19 +163,37 @@ public interface Scheduler {
      * Run a task asynchronously.
      *
      * @param task The lambda to run.
-     * @return The created {@link BukkitTask}.
+     * @return The created {@link UnifiedTask}.
      */
-    BukkitTask runAsync(@NotNull Runnable task);
+    UnifiedTask runAsync(@NotNull Runnable task);
 
     /**
      * Run a task.
      *
      * @param location The location.
      * @param task     The task.
-     * @return The created {@link BukkitTask}.
+     * @return The created {@link UnifiedTask}.
      */
-    BukkitTask run(@NotNull Location location,
+    UnifiedTask run(@NotNull Location location,
                    @NotNull Runnable task);
+
+    /**
+     * Run a global task.
+     *
+     * @param task     The task.
+     * @return The created {@link UnifiedTask}.
+     */
+    UnifiedTask runGlobally(@NotNull Runnable task);
+
+    /**
+     * Run a task.
+     *
+     * @param entity The entity.
+     * @param task     The task.
+     * @return The created {@link UnifiedTask}.
+     */
+    UnifiedTask run(@NotNull Entity entity,
+                    @NotNull Runnable task);
 
     /**
      * Run a task after a delay.
@@ -183,11 +201,33 @@ public interface Scheduler {
      * @param location   The location.
      * @param ticksLater The delay.
      * @param task       The task.
-     * @return The created {@link BukkitTask}.
+     * @return The created {@link UnifiedTask}.
      */
-    BukkitTask runLater(@NotNull Location location,
+    UnifiedTask runLater(@NotNull Location location,
                         int ticksLater,
                         @NotNull Runnable task);
+
+    /**
+     * Run a task after a delay.
+     *
+     * @param entity   The entity.
+     * @param ticksLater The delay.
+     * @param task       The task.
+     * @return The created {@link UnifiedTask}.
+     */
+    UnifiedTask runLater(@NotNull Entity entity,
+                         int ticksLater,
+                         @NotNull Runnable task);
+
+    /**
+     * Run a task globally after a delay.
+     *
+     * @param ticksLater The delay.
+     * @param task       The task.
+     * @return The created {@link UnifiedTask}.
+     */
+    UnifiedTask runLaterGlobally(int ticksLater,
+                                 @NotNull Runnable task);
 
     /**
      * Run a task on a timer.
@@ -196,12 +236,38 @@ public interface Scheduler {
      * @param delay    The delay.
      * @param repeat   The repeat delay.
      * @param task     The task.
-     * @return The created {@link BukkitTask}.
+     * @return The created {@link UnifiedTask}.
      */
-    BukkitTask runTimer(@NotNull Location location,
+    UnifiedTask runTimer(@NotNull Location location,
                         int delay,
                         int repeat,
                         @NotNull Runnable task);
+
+    /**
+     * Run a task on a timer.
+     *
+     * @param entity The entity.
+     * @param delay    The delay.
+     * @param repeat   The repeat delay.
+     * @param task     The task.
+     * @return The created {@link UnifiedTask}.
+     */
+    UnifiedTask runTimer(@NotNull Entity entity,
+                         int delay,
+                         int repeat,
+                         @NotNull Runnable task);
+
+    /**
+     * Run a task globally on a timer.
+     *
+     * @param delay    The delay.
+     * @param repeat   The repeat delay.
+     * @param task     The task.
+     * @return The created {@link UnifiedTask}.
+     */
+    UnifiedTask runTimerGlobally(int delay,
+                                 int repeat,
+                                 @NotNull Runnable task);
 
     /**
      * Run a task asynchronously on a timer.
@@ -209,9 +275,9 @@ public interface Scheduler {
      * @param delay  The delay.
      * @param repeat The repeat delay.
      * @param task   The task.
-     * @return The created {@link BukkitTask}.
+     * @return The created {@link UnifiedTask}.
      */
-    BukkitTask runTimerAsync(int delay,
+    UnifiedTask runTimerAsync(int delay,
                              int repeat,
                              @NotNull Runnable task);
 }

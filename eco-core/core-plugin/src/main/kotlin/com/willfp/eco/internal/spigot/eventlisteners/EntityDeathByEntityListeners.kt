@@ -1,6 +1,8 @@
 package com.willfp.eco.internal.spigot.eventlisteners
 
 import com.willfp.eco.core.EcoPlugin
+import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.entity.LivingEntity
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -31,7 +33,7 @@ class EntityDeathByEntityListeners(
 
         events += builtEvent
 
-        this.plugin.scheduler.runLater(5) { // Fixes conflicts with WildStacker
+        this.plugin.scheduler.runLaterGlobally(5) { // Fixes conflicts with WildStacker
             events.remove(builtEvent)
         }
     }

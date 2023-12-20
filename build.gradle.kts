@@ -21,6 +21,7 @@ dependencies {
     implementation(project(path = ":eco-core:core-plugin", configuration = "shadow"))
     implementation(project(":eco-core:core-proxy"))
     implementation(project(":eco-core:core-backend"))
+    implementation(project(":eco-core:core-folia"))
     implementation(project(path = ":eco-core:core-nms:v1_17_R1", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_18_R1", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_18_R2", configuration = "reobf"))

@@ -1,3 +1,4 @@
+folia-supported: true
 name: eco
 version: ${projectVersion}
 main: com.willfp.eco.internal.spigot.EcoImpl

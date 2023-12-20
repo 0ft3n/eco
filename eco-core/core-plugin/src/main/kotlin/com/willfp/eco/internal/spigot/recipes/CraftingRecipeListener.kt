@@ -3,7 +3,9 @@ package com.willfp.eco.internal.spigot.recipes
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.recipe.Recipes
+import org.bukkit.Bukkit
 import org.bukkit.Keyed
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -27,7 +29,7 @@ class CraftingRecipeListener(val plugin: EcoPlugin) : Listener {
         handlePrepare(event)
 
         if (plugin.configYml.getBool("enforce-preparing-recipes")) {
-            plugin.scheduler.runLater(1) {
+            plugin.scheduler.runLaterGlobally(1) {
                 handlePrepare(event)
             }
         }

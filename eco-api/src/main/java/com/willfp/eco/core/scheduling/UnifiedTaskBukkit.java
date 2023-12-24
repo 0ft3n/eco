@@ -41,4 +41,9 @@ public class UnifiedTaskBukkit implements UnifiedTask {
     public void cancel() {
         handle.cancel();
     }
+
+    @Override
+    public boolean isValid() {
+        return true;
+    }
 }

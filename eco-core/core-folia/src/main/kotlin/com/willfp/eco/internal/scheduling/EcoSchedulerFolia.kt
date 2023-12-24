@@ -19,12 +19,12 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
 
     override fun runLater(location: Location, ticksLater: Int, task: Runnable): UnifiedTask {
         return UnifiedTaskFolia(Bukkit.getRegionScheduler().runDelayed(plugin, location, { task.run() }, ticksLater.toLong().coerceAtLeast(1)))
-            .apply { tasks.add(this) }
+            .apply { if(this.isValid) tasks.add(this) }
     }
 
     override fun runLater(entity: Entity, ticksLater: Int, task: Runnable): UnifiedTask {
-        return UnifiedTaskFolia(entity.scheduler.runDelayed(plugin, { task.run() }, null, ticksLater.toLong().coerceAtLeast(1))!!)
-            .apply { tasks.add(this) }
+        return UnifiedTaskFolia(entity.scheduler.runDelayed(plugin, { task.run() }, {}, ticksLater.toLong().coerceAtLeast(1)))
+            .apply { if(this.isValid) tasks.add(this) }
     }
 
     @Deprecated("Deprecated in Java")
@@ -34,12 +34,12 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
 
     override fun runTimer(location: Location, delay: Int, repeat: Int, task: Runnable): UnifiedTask {
         return UnifiedTaskFolia(Bukkit.getRegionScheduler().runAtFixedRate(plugin, location, { task.run() }, delay.toLong().coerceAtLeast(1), repeat.toLong().coerceAtLeast(1)))
-            .apply { tasks.add(this) }
+            .apply { if(this.isValid) tasks.add(this) }
     }
 
     override fun runTimer(entity: Entity, delay: Int, repeat: Int, task: Runnable): UnifiedTask {
-        return UnifiedTaskFolia(entity.scheduler.runAtFixedRate(plugin, { task.run() }, null, delay.toLong().coerceAtLeast(1), repeat.toLong().coerceAtLeast(1))!!)
-            .apply { tasks.add(this) }
+        return UnifiedTaskFolia(entity.scheduler.runAtFixedRate(plugin, { task.run() }, {}, delay.toLong().coerceAtLeast(1), repeat.toLong().coerceAtLeast(1)))
+            .apply { if(this.isValid) tasks.add(this) }
     }
 
     @Deprecated("Deprecated in Java")
@@ -49,13 +49,13 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
 
     override fun run(location: Location, task: Runnable): UnifiedTask {
         return UnifiedTaskFolia(Bukkit.getRegionScheduler().run(plugin, location) { task.run() })
-            .apply { tasks.add(this) }
+            .apply { if(this.isValid) tasks.add(this) }
     }
 
     override fun run(entity: Entity, task: Runnable): UnifiedTask {
         return UnifiedTaskFolia(
-            entity.scheduler.run(plugin, { task.run() }, null)!!
-        ).apply { tasks.add(this) }
+            entity.scheduler.run(plugin, { task.run() }, {})
+        ).apply { if(this.isValid) tasks.add(this) }
     }
 
     override fun runAsync(task: Runnable): UnifiedTask {

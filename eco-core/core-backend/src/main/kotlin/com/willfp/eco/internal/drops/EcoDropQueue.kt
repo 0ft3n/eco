@@ -90,11 +90,15 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
             }
         } else {
             for (drop in items) {
-                world.dropItem(location, drop).velocity = Vector()
+                Eco.get().ecoPlugin.scheduler.run(location) {
+                    world.dropItem(location, drop).velocity = Vector()
+                }
             }
             if (xp > 0) {
-                val orb = world.spawnEntity(location, EntityType.EXPERIENCE_ORB) as ExperienceOrb
-                orb.experience = xp
+                Eco.get().ecoPlugin.scheduler.run(location) {
+                    val orb = world.spawnEntity(location, EntityType.EXPERIENCE_ORB) as ExperienceOrb
+                    orb.experience = xp
+                }
             }
         }
     }

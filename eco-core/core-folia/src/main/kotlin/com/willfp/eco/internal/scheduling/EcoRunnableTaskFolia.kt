@@ -4,6 +4,8 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.scheduling.RunnableTask
 import com.willfp.eco.core.scheduling.UnifiedTask
 import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.entity.Entity
 import java.util.concurrent.TimeUnit
 
 abstract class EcoRunnableTaskFolia(protected val plugin: EcoPlugin) : RunnableTask {
@@ -12,6 +14,18 @@ abstract class EcoRunnableTaskFolia(protected val plugin: EcoPlugin) : RunnableT
     @Synchronized
     override fun runTask(): UnifiedTask {
         this.task = UnifiedTaskFolia(Bukkit.getGlobalRegionScheduler().run(plugin) { this.run() })
+        return this.task!!
+    }
+
+    @Synchronized
+    override fun runTask(entity: Entity): UnifiedTask? {
+        this.task = UnifiedTaskFolia(entity.scheduler.run(plugin, { this.run() }, { }))
+        return this.task
+    }
+
+    @Synchronized
+    override fun runTask(location: Location): UnifiedTask {
+        this.task = UnifiedTaskFolia(Bukkit.getRegionScheduler().run(plugin, location) { this.run() })
         return this.task!!
     }
 
@@ -28,14 +42,41 @@ abstract class EcoRunnableTaskFolia(protected val plugin: EcoPlugin) : RunnableT
     }
 
     @Synchronized
+    override fun runTaskLater(entity: Entity, delay: Long): UnifiedTask? {
+        this.task = UnifiedTaskFolia(entity.scheduler.runDelayed(plugin, { this.run() }, { }, delay))
+        return this.task
+    }
+
+    @Synchronized
+    override fun runTaskLater(location: Location, delay: Long): UnifiedTask {
+        this.task = UnifiedTaskFolia(Bukkit.getRegionScheduler().runDelayed(plugin, location, { this.run() }, delay))
+        return this.task!!
+    }
+
+    @Synchronized
     override fun runTaskLaterAsynchronously(delay: Long): UnifiedTask {
-        this.task = UnifiedTaskFolia(Bukkit.getAsyncScheduler().runDelayed(plugin, { this.run() }, delay/20, TimeUnit.SECONDS))
+        this.task = UnifiedTaskFolia(Bukkit.getAsyncScheduler().runDelayed(plugin, { this.run() }, delay/20,
+            TimeUnit.SECONDS))
         return this.task!!
     }
 
     @Synchronized
     override fun runTaskTimer(delay: Long, period: Long): UnifiedTask {
-        this.task = UnifiedTaskFolia(Bukkit.getGlobalRegionScheduler().runAtFixedRate(plugin, { this.run() }, delay, period))
+        this.task = UnifiedTaskFolia(Bukkit.getGlobalRegionScheduler().runAtFixedRate(plugin, { this.run() },
+            delay, period))
+        return this.task!!
+    }
+
+    @Synchronized
+    override fun runTaskTimer(entity: Entity, delay: Long, period: Long): UnifiedTask? {
+        this.task = UnifiedTaskFolia(entity.scheduler.runAtFixedRate(plugin, { this.run() }, { }, delay, period))
+        return this.task
+    }
+
+    @Synchronized
+    override fun runTaskTimer(location: Location, delay: Long, period: Long): UnifiedTask {
+        this.task = UnifiedTaskFolia(Bukkit.getRegionScheduler().runAtFixedRate(plugin, location, { this.run() }, delay,
+            period))
         return this.task!!
     }
 

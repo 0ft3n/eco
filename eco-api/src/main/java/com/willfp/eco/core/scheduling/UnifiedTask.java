@@ -15,4 +15,6 @@ public interface UnifiedTask {
     boolean isCancelled();
 
     void cancel();
+
+    boolean isValid();
 }

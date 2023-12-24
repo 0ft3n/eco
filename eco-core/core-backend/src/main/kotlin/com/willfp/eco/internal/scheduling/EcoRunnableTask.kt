@@ -5,12 +5,11 @@ import com.willfp.eco.core.scheduling.RunnableTask
 import com.willfp.eco.core.scheduling.UnifiedTask
 import com.willfp.eco.core.scheduling.UnifiedTaskBukkit
 import org.bukkit.scheduler.BukkitRunnable
-import org.bukkit.scheduler.BukkitTask
 
 abstract class EcoRunnableTask(protected val plugin: EcoPlugin) : BukkitRunnable(), RunnableTask {
     @Synchronized
     override fun runTask(): UnifiedTask {
-        return UnifiedTaskBukkit(super.runTask(plugin))
+        return UnifiedTaskBukkit(super<BukkitRunnable>.runTask(plugin))
     }
 
     @Synchronized
@@ -20,7 +19,7 @@ abstract class EcoRunnableTask(protected val plugin: EcoPlugin) : BukkitRunnable
 
     @Synchronized
     override fun runTaskLater(delay: Long): UnifiedTask {
-        return UnifiedTaskBukkit(super.runTaskLater(plugin, delay))
+        return UnifiedTaskBukkit(super<BukkitRunnable>.runTaskLater(plugin, delay))
     }
 
     @Synchronized
@@ -30,7 +29,7 @@ abstract class EcoRunnableTask(protected val plugin: EcoPlugin) : BukkitRunnable
 
     @Synchronized
     override fun runTaskTimer(delay: Long, period: Long): UnifiedTask {
-        return UnifiedTaskBukkit(super.runTaskTimer(plugin, delay, period))
+        return UnifiedTaskBukkit(super<BukkitRunnable>.runTaskTimer(plugin, delay, period))
     }
 
     @Synchronized

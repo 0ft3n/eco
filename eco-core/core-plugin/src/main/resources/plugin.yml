@@ -11,13 +11,23 @@ load: STARTUP
 loadbefore:
   - Spartan
   - CustomCrafting
+  - Lands
+  - EconomyShopGUI
+  - EconomyShopGUI-Premium
+  - CMI
+  - DeluxeCombat
+  - SCore
+  - ExecutableItems
 softdepend:
+  - ItemBridge
+  - HuskClaims
+  - HuskTowns
+  - Terra
   - ProtocolLib
   - WorldGuard
   - GriefPrevention
   - Towny
   - FactionsUUID
-  - Lands
   - Kingdoms
   - NoCheatPlus
   - AAC
@@ -34,21 +44,16 @@ softdepend:
   - Alice
   - HolographicDisplays
   - GHolo
-  - CMI
   - Essentials
   - Vault
   - BentoBox
-  - DeluxeCombat
   - IridiumSkyblock
   - SuperiorSkyblock2
   - FabledSkyBlock
   - CrashClaim
   - DecentHolograms
   - MythicMobs
-  - ExecutableItems
   - RPGHorses
-  - EconomyShopGUI
-  - EconomyShopGUI-Premium
   - zShop
   - DeluxeSellwands
   - Scyther

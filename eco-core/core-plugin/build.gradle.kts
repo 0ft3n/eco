@@ -26,7 +26,7 @@ dependencies {
 
     // Included in spigot jar
     compileOnly("com.google.code.gson:gson:2.8.8")
-    compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
 
     // Plugin dependencies
     compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
@@ -49,8 +49,7 @@ dependencies {
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:1.8.3")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("com.github.WhipDevelopment:CrashClaim:f9cd7d92eb")
-    compileOnly("com.wolfyscript.wolfyutilities:wolfyutilities:3.16.0.0")
-    compileOnly("com.github.decentsoftware-eu:decentholograms:2.1.2")
+    compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.5")
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.4.6")
     compileOnly("com.github.N0RSKA:ScytherAPI:55a")
     compileOnly("org.black_ixx:playerpoints:3.2.5")
@@ -63,6 +62,10 @@ dependencies {
     compileOnly("com.denizenscript:denizen:1.2.7-SNAPSHOT") {
         exclude(group = "*", module = "*")
     }
+    compileOnly("com.iridium:IridiumSkyblock:4.0.8")
+    compileOnly("net.william278.huskclaims:huskclaims-bukkit:1.0.1")
+    compileOnly("net.william278:husktowns:2.6.1")
+    compileOnly("com.github.jojodmo:ItemBridge:b0054538c1")
 
     compileOnly(fileTree("../../lib") {
         include("*.jar")

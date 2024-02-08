@@ -46,9 +46,6 @@ allprojects {
         maven("https://repo.auxilor.io/repository/maven-public/")
         maven("https://jitpack.io")
 
-        // CustomCrafting
-        maven("https://maven.wolfyscript.com/repository/public/")
-
         // SuperiorSkyblock2
         maven("https://repo.bg-software.com/repository/api/")
 
@@ -90,6 +87,12 @@ allprojects {
 
         // Denizen
         maven("https://maven.citizensnpcs.co/repo")
+
+        // IridiumSkyblock
+        maven("https://nexus.iridiumdevelopment.net/repository/maven-releases/")
+
+        // HuskPlugins
+        maven("https://repo.william278.net/releases")
     }
 
     dependencies {

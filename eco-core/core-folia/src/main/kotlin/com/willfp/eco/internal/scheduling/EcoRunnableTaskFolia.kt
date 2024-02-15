@@ -82,7 +82,7 @@ abstract class EcoRunnableTaskFolia(protected val plugin: EcoPlugin) : RunnableT
 
     @Synchronized
     override fun runTaskTimerAsynchronously(delay: Long, period: Long): UnifiedTask {
-        this.task = UnifiedTaskFolia(Bukkit.getAsyncScheduler().runAtFixedRate(plugin, { this.run() }, delay/20, period/20,
+        this.task = UnifiedTaskFolia(Bukkit.getAsyncScheduler().runAtFixedRate(plugin, { this.run() }, delay, period,
             TimeUnit.SECONDS))
         return this.task!!
     }

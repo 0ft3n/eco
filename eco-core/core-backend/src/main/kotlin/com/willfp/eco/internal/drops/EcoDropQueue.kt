@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.drops
 
+import com.willfp.eco.core.Eco
 import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.eco.core.events.DropQueuePushEvent

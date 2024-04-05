@@ -70,20 +70,22 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
         }
         if (hasTelekinesis) {
             val leftover = player.inventory.addItem(*items.toTypedArray())
-            for (drop in leftover.values) {
-                world.dropItem(location, drop!!).velocity = Vector()
-            }
-            if (xp > 0) {
-                if (Prerequisite.HAS_PAPER.isMet) {
-                    player.giveExp(xp, true)
-                } else {
-                    val orb =
-                        world.spawnEntity(
-                            player.location.add(0.0, 0.2, 0.0),
-                            EntityType.EXPERIENCE_ORB
-                        ) as ExperienceOrb
-                    orb.velocity = Vector(0, 0, 0)
-                    orb.experience = xp
+            Eco.get().ecoPlugin.scheduler.run(location) {
+                for (drop in leftover.values) {
+                    world.dropItem(location, drop!!).velocity = Vector()
+                }
+                if (xp > 0) {
+                    if (Prerequisite.HAS_PAPER.isMet) {
+                        player.giveExp(xp, true)
+                    } else {
+                        val orb =
+                            world.spawnEntity(
+                                player.location.add(0.0, 0.2, 0.0),
+                                EntityType.EXPERIENCE_ORB
+                            ) as ExperienceOrb
+                        orb.velocity = Vector(0, 0, 0)
+                        orb.experience = xp
+                    }
                 }
             }
         } else {

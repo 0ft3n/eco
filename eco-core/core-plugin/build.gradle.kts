@@ -15,7 +15,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.37.3")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.37.3")
     implementation("com.zaxxer:HikariCP:5.0.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.1.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.2")
     implementation("org.javassist:javassist:3.29.2-GA")
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.5.1")
@@ -38,7 +38,7 @@ dependencies {
     }
     compileOnly("com.github.angeschossen:LandsAPI:6.26.18")
     compileOnly("com.github.angeschossen:PluginFrameworkAPI:1.0.0")
-    compileOnly("fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT")
+    compileOnly("fr.neatmonster:nocheatplus:3.16.0-SNAPSHOT")
     compileOnly("com.github.jiangdashao:matrix-api-repo:317d4635fd")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.1.202")
     compileOnly("me.clip:placeholderapi:2.11.4")

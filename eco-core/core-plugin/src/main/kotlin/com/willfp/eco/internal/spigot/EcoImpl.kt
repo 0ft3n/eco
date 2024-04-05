@@ -89,6 +89,13 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         this
     )
 
+    override fun forceSave() {
+        this.logger.info("Saving player data...")
+        val start = System.currentTimeMillis()
+        profileHandler.save()
+        this.logger.info("Saved player data! Took ${System.currentTimeMillis() - start}ms")
+    }
+
     init {
         getProxy(CommonsInitializerProxy::class.java).init(this)
     }

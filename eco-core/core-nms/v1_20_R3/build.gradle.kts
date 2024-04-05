@@ -10,9 +10,9 @@ dependencies {
     paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
     pluginRemapper("net.fabricmc:tiny-remapper:0.10.3:fat")
 
-    implementation("net.kyori:adventure-text-minimessage:4.11.0") {
+    implementation("net.kyori:adventure-text-minimessage:4.15.0") {
         version {
-            strictly("4.11.0")
+            strictly("4.15.0")
         }
         exclude(group = "net.kyori", module = "adventure-api")
     }

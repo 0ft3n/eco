@@ -64,6 +64,10 @@ import java.util.logging.Logger;
  */
 @ApiStatus.Internal
 public interface Eco {
+    /**
+     * Create a scheduler.
+     */
+    void forceSave();
 
     /**
      * Create a scheduler.

@@ -46,6 +46,8 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
+        maven("https://maven.fabricmc.net/")
+        maven("https://repo.phoenix616.dev/")
         maven("https://repo.auxilor.io/repository/maven-public/")
         maven("https://jitpack.io")
 

@@ -14,6 +14,7 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
 
     @Deprecated("Deprecated in Java")
     override fun runLater(runnable: Runnable, ticksLater: Long): UnifiedTask {
+        
         return UnifiedTaskFolia(Bukkit.getGlobalRegionScheduler().runDelayed(plugin, { runnable.run() }, ticksLater.coerceAtLeast(1)))
     }
 

@@ -46,11 +46,13 @@ class EntityDeathByEntityListeners(
 
         var builtEvent: EntityDeathByEntityBuilder? = null
 
-        for (builder in events) {
-            if (builder.victim == victim) {
-                builtEvent = builder
+        try {
+            for (builder in events) {
+                if (builder.victim == victim) {
+                    builtEvent = builder
+                }
             }
-        }
+        } catch (ignored: ConcurrentModificationException) {}
 
         if (builtEvent == null) {
             return

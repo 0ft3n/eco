@@ -1,5 +1,6 @@
 package com.willfp.eco.core.integrations.hologram;
 
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.IntegrationRegistry;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +34,17 @@ public final class HologramManager {
      */
     public static Hologram createHologram(@NotNull final Location location,
                                           @NotNull final List<String> contents) {
+        String forcedIntegration = Eco.get().getEcoPlugin().getConfigYml()
+                .getStringOrNull("force-integrations.hologram");
+
+        if (forcedIntegration != null) {
+            var found = REGISTRY.values().stream().filter(holo -> holo.getID().equalsIgnoreCase(forcedIntegration))
+                    .findFirst();
+            if (found.isPresent()) {
+                return found.get().createHologram(location, contents);
+            }
+        }
+
         return REGISTRY.firstSafely(
                 integration -> integration.createHologram(location, contents),
                 new DummyHologram()

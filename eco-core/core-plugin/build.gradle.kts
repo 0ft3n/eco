@@ -32,6 +32,7 @@ dependencies {
     // Plugin dependencies
     compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7-SNAPSHOT")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
     compileOnly("com.github.TechFortress:GriefPrevention:16.17.1")
     compileOnly("com.github.TownyAdvanced:Towny:0.99.5.21") {
         exclude(group = "com.zaxxer", module = "HikariCP")
@@ -60,7 +61,7 @@ dependencies {
     compileOnly("com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT")
     compileOnly("com.github.sirblobman.combatlogx:api:11.0.0.0-SNAPSHOT")
     compileOnly("LibsDisguises:LibsDisguises:10.0.26")
-    compileOnly("com.denizenscript:denizen:1.2.7-SNAPSHOT") {
+    compileOnly("com.denizenscript:denizen:1.2.5-SNAPSHOT") {
         exclude(group = "*", module = "*")
     }
     compileOnly("com.iridium:IridiumSkyblock:4.0.8")

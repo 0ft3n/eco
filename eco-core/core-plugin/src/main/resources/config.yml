@@ -118,3 +118,7 @@ display-without-meta: false
 # non eco-based plugins in recipes and are encountering issues with invisible items or similar.
 # This may cause issues with other plugins, so only enable this if you're having issues.
 enforce-preparing-recipes: false
+
+#
+force-integrations:
+  hologram: "FancyHolograms"

@@ -125,14 +125,6 @@ public class Prerequisite {
     );
 
     /**
-     * Requires the server to be running an implementation of Folia.
-     */
-    public static final Prerequisite HAS_FOLIA = new Prerequisite(
-            () -> ClassUtils.exists("io.papermc.paper.threadedregions.RegionizedServer"),
-            "Requires server to be running Folia!"
-    );
-
-    /**
      * If the necessary prerequisite condition has been met.
      */
     private boolean isMet;

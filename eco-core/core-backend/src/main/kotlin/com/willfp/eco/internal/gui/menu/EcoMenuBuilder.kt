@@ -24,9 +24,13 @@ class EcoMenuBuilder(
     private val menuEventHandlers = mutableListOf<MenuEventHandler<*>>()
     private val onBuild = mutableListOf<(Menu) -> Unit>()
     private var allowsChangingHeldItem = false
+    private var asyncRender = false
 
     override fun getRows() = rows
     override fun getColumns() = columns
+    override fun asyncRender(async: Boolean) {
+        asyncRender = async
+    }
 
     override fun setTitle(title: String): MenuBuilder {
         this.title = StringUtils.format(title)
@@ -137,7 +141,8 @@ class EcoMenuBuilder(
             onRender,
             onOpen,
             menuEventHandlers,
-            allowsChangingHeldItem
+            allowsChangingHeldItem,
+            asyncRender
         )
 
         onBuild.forEach { it(menu) } // Run on build functions.

@@ -29,6 +29,13 @@ public interface PageBuilder {
     int getColumns();
 
     /**
+     * Set async rendering
+     *
+     * @param async - True to render async, False to sync
+     */
+    void asyncRender(final boolean async);
+
+    /**
      * Set a slot.
      *
      * @param row    The row.

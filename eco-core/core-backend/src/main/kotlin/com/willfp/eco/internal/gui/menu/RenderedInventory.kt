@@ -11,6 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import java.util.UUID
+import kotlin.concurrent.thread
 
 private val trackedForceRendered = mutableMapOf<UUID, RenderedInventory>()
 
@@ -49,6 +50,14 @@ class RenderedInventory(
     val state = mutableMapOf<String, Any?>()
 
     fun render() {
+        if (menu.asyncRendering) {
+            thread {
+                doRender()
+            }
+        } else doRender()
+    }
+
+    private fun doRender() {
         // This can happen when opening menus from other menus,
         // fixing a bug where multiple paginated menus on top of
         // each other caused bugs with page changer display.

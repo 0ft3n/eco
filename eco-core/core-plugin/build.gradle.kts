@@ -1,5 +1,3 @@
-import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
-
 group = "com.willfp"
 version = rootProject.version
 
@@ -10,16 +8,13 @@ dependencies {
 
     // Libraries
     implementation("com.github.WillFP:Crunch:1.1.3")
-    implementation("mysql:mysql-connector-java:8.0.25")
-    implementation("org.jetbrains.exposed:exposed-core:0.37.3")
-    implementation("org.jetbrains.exposed:exposed-dao:0.37.3")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.37.3")
-    implementation("com.zaxxer:HikariCP:5.0.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.2")
+    implementation("com.mysql:mysql-connector-j:8.4.0")
+    implementation("org.jetbrains.exposed:exposed-core:0.53.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.53.0")
+    implementation("com.zaxxer:HikariCP:5.1.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.1.0")
     implementation("org.javassist:javassist:3.29.2-GA")
-    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.0.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.5.1")
-    implementation("org.mongodb:bson-kotlinx:5.0.0")
+    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.1.2")
     implementation("com.moandjiezana.toml:toml4j:0.7.2") {
         exclude(group = "com.google.code.gson", module = "gson")
     }
@@ -32,14 +27,13 @@ dependencies {
     // Plugin dependencies
     compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7-SNAPSHOT")
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
     compileOnly("com.github.TechFortress:GriefPrevention:16.17.1")
     compileOnly("com.github.TownyAdvanced:Towny:0.99.5.21") {
         exclude(group = "com.zaxxer", module = "HikariCP")
     }
     compileOnly("com.github.angeschossen:LandsAPI:6.26.18")
     compileOnly("com.github.angeschossen:PluginFrameworkAPI:1.0.0")
-    compileOnly("fr.neatmonster:nocheatplus:3.16.0-SNAPSHOT")
+    compileOnly("fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT")
     compileOnly("com.github.jiangdashao:matrix-api-repo:317d4635fd")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.1.202")
     compileOnly("me.clip:placeholderapi:2.11.4")
@@ -61,7 +55,7 @@ dependencies {
     compileOnly("com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT")
     compileOnly("com.github.sirblobman.combatlogx:api:11.0.0.0-SNAPSHOT")
     compileOnly("LibsDisguises:LibsDisguises:10.0.26")
-    compileOnly("com.denizenscript:denizen:1.2.5-SNAPSHOT") {
+    compileOnly("com.denizenscript:denizen:1.2.7-SNAPSHOT") {
         exclude(group = "*", module = "*")
     }
     compileOnly("com.iridium:IridiumSkyblock:4.0.8")
@@ -78,7 +72,6 @@ dependencies {
 tasks {
     shadowJar {
         minimize {
-            exclude(dependency("org.litote.kmongo:kmongo-coroutine:.*"))
             exclude(dependency("org.jetbrains.exposed:.*:.*"))
             exclude(dependency("com.willfp:ModelEngineBridge:.*"))
         }

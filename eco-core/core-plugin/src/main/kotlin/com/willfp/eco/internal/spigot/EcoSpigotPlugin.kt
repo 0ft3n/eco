@@ -65,8 +65,8 @@ import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
 import com.willfp.eco.internal.spigot.data.DataListener
 import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.PlayerBlockListener
-import com.willfp.eco.internal.spigot.data.ProfileHandler
-import com.willfp.eco.internal.spigot.data.storage.ProfileSaver
+import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
+import com.willfp.eco.internal.spigot.data.profiles.ProfileLoadListener
 import com.willfp.eco.internal.spigot.drops.CollatedRunnable
 import com.willfp.eco.internal.spigot.eventlisteners.EntityDeathByEntityListeners
 import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersPaper
@@ -144,14 +144,13 @@ import me.qKing12.RoyaleEconomy.MultiCurrency.MultiCurrencyHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 
 abstract class EcoSpigotPlugin : EcoPlugin() {
     abstract val dataYml: DataYml
-    protected abstract val profileHandler: ProfileHandler
+    abstract val profileHandler: ProfileHandler
     protected var bukkitAudiences: BukkitAudiences? = null
 
     init {
@@ -261,7 +260,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         this.getProxy(FastItemStackFactoryProxy::class.java).create(ItemStack(Material.AIR)).unwrap()
 
         // Preload categorized persistent data keys
-        profileHandler.initialize()
+        // profileHandler.initialize()
 
         // Init adventure
         if (!Prerequisite.HAS_PAPER.isMet) {
@@ -283,8 +282,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     override fun createTasks() {
         CollatedRunnable(this)
 
-        this.scheduler.runLaterGlobally(3) {
-            profileHandler.migrateIfNeeded()
+        if (!profileHandler.migrateIfNecessary()) {
+            profileHandler.profileWriter.startTickingAutosave()
+            profileHandler.profileWriter.startTickingSaves()
         }
 
         profileHandler.startAutosaving()
@@ -429,7 +429,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             GUIListener(this),
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
-            DataListener(this, profileHandler),
+            ProfileLoadListener(this, profileHandler),
             PlayerBlockListener(this),
             ServerLocking
         )

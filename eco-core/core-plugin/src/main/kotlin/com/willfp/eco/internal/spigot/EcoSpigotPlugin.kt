@@ -62,7 +62,6 @@ import com.willfp.eco.internal.price.PriceFactoryXP
 import com.willfp.eco.internal.price.PriceFactoryXPLevels
 import com.willfp.eco.internal.recipes.AutocrafterPatch
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
-import com.willfp.eco.internal.spigot.data.DataListener
 import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.PlayerBlockListener
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
@@ -286,10 +285,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             profileHandler.profileWriter.startTickingAutosave()
             profileHandler.profileWriter.startTickingSaves()
         }
-
-        profileHandler.startAutosaving()
-
-        ProfileSaver(this, profileHandler).startTicking()
 
         this.scheduler.runTimerGlobally(
             this.configYml.getInt("display-frame-ttl"),

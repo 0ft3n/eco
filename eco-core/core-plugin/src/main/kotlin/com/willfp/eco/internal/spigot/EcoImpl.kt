@@ -1,9 +1,6 @@
 package com.willfp.eco.internal.spigot
 
-import com.willfp.eco.core.Eco
-import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.PluginLike
-import com.willfp.eco.core.PluginProps
+import com.willfp.eco.core.*
 import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.core.config.ConfigType
